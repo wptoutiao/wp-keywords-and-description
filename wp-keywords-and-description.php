@@ -62,25 +62,28 @@ function echo_keywords_description() {
 		$keywords = get_option("keywords");
         	$description = get_option("description");
 	} elseif (is_single() || is_page()){
-
 		$description1 = get_post_meta(get_the_ID(), "description", true);
-$content = get_the_content();
-		$description2 = mb_strimwidth(strip_tags(apply_filters('the_content', $content)), 0, 200, "…");
-	echo $description2;
-		$description = $description1? $description1 : $description2;
-		$keywords = get_post_meta($post->ID, "keywords", true);
+		
+		$args = array(
+			'ID' => get_the_ID(), // 只選 category 的文章.
+		);
+			$description2 = mb_strimwidth(strip_tags(get_post(get_the_ID())->post_content), 0, 200, "…");
+			$description = $description1? $description1 : $description2;
 
-		if($keywords == '') {
-			$tags = wp_get_post_tags($post->ID);    
-			foreach ($tags as $tag ){
-				$keywords = $keywords . $tag->name . ", ";
+			$keywords = get_post_meta($post->ID, "keywords", true);
+
+			if($keywords == '') {
+				$tags = wp_get_post_tags($post->ID);    
+				foreach ($tags as $tag ){
+					$keywords = $keywords . $tag->name . ", ";
+				}
+				$keywords = rtrim($keywords, ', ');
 			}
-			$keywords = rtrim($keywords, ', ');
-		}
-		if($keywords == '')
-		{
-			$keywords = single_post_title('', false);
-		}
+			if($keywords == '')
+			{
+				$keywords = single_post_title('', false);
+			}
+		
 	} elseif (is_category()){
 		$keywords = single_cat_title('', false);
 		$description = category_description();
@@ -92,7 +95,7 @@ $content = get_the_content();
 		$keywords = single_cat_title('', false);
 		$description = category_description();
 	}
-	$description = trim(strip_tags($description));
+	$description = trim(strip_tags(str_replace("\n","",$description)));
 	$keywords = trim(strip_tags($keywords));
 
 	echo '<meta name="keywords" content="'.$keywords.'" />'."\n";
