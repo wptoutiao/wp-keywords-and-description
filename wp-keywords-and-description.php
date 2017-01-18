@@ -44,6 +44,27 @@ function my_function_menu()
 			<textarea name="description" cols="60" rows="10"><?php echo $description;?></textarea>
 		</p>
 		
+		<?php
+			$args = array(
+				'type' => 'post',
+				'child_of' => 0,
+				'parent' => '',
+				'orderby' => 'name',
+				'order' => 'ASC',
+				'hide_empty' => 0,
+				'hierarchical' => 1,
+				'exclude' => '',
+				'include' => '',
+				'number' => '',
+				'taxonomy' => 'category',
+				'pad_counts' => false
+			);
+			$categories = get_categories( $args );
+			foreach($categories as $categorie){
+				echo $categorie->name.'：<br />';
+			}
+		?>
+		
 		<p>
 			<input type="submit" name="action" value="Save" class="button-primary" />
 		</p>
